@@ -39,4 +39,14 @@ public_users.get('/review/:isbn',function (req, res) {
   return res.status(300).json({message: "Yet to be implemented"});
 });
 
+function findBookByISBN(isbn){
+    for (const id in books){
+        if(books.hasOwnProperty(id)){
+            if(books[id].isbn === isbn){
+                return books[id];
+            }
+        }
+    }
+    return null;
+}
 module.exports.general = public_users;
