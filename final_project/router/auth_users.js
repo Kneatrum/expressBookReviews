@@ -36,7 +36,6 @@ regd_users.post("/login", (req,res) => {
   if (!username || !password){
     return res.status(404).json({message:"Error in logging in"});
   }
-  console.log("Users")
 
   if(authenticatedUser(username,password)){
     let accessToken = jwt.sign({
@@ -57,7 +56,7 @@ regd_users.post("/login", (req,res) => {
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
     const isbn = req.params.isbn;
-    const username = req.session.username;
+    const username = req.session.authorization.username;
 
     if(!isbn || !username){
         return res.status(401).json({ message: "User not authenticated or ISBN missing" });
@@ -74,7 +73,7 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
     }
 
     book.reviews[username] = review;
-    return res.send("The review for the book with ISBN ${isbn} has been added/updated");
+    return res.send("The review for the book with ISBN " + isbn + " has been added/updated");
 });
 
 module.exports.authenticated = regd_users;
