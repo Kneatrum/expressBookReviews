@@ -73,16 +73,28 @@ public_users.get('/isbn/:isbn',function (req, res) {
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
-  const author = req.params.author;
-  const bookList = Object.values(books)
-  let booksByAuthor = bookList.filter((book) => {
-    return (book.author === author)
-  });
-  if(booksByAuthor.length > 0){
-    res.send(JSON.stringify({booksByAuthor},null,4));
-  } else{
-      return res.status(300).json({message: "Books by this author not found"});
-  }
+    const author = req.params.author;
+    let bookList = null;
+    let booksByAuthor = null;
+
+    let myPromise = new Promise((resolve, reject) => {
+        setTimeout(() => {
+            bookList = Object.values(books);
+            booksByAuthor = bookList.filter((book) => {
+                return (book.author === author)
+            });
+
+            if(booksByAuthor.length > 0){
+                resolve("Promise resolved");
+            } else{
+                return res.status(300).json({message: "Books by this author not found"});
+            }
+        },6000);
+    });
+
+    myPromise.then(() => {
+        res.send(booksByAuthor[0]);
+    });
   
 });
 
