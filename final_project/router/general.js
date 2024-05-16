@@ -93,7 +93,7 @@ public_users.get('/author/:author',function (req, res) {
     });
 
     myPromise.then(() => {
-        res.send(booksByAuthor[0]);
+        res.send(booksByAuthor);
     });
   
 });
@@ -101,16 +101,27 @@ public_users.get('/author/:author',function (req, res) {
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
   const title = req.params.title;
-  const booksList = Object.values(books);
-  const booksByTitle = booksList.filter((book) => {
-    return (book.title === title)
-  });
+  let booksByTitle = null;
 
-  if(booksByTitle.length > 0){
-    res.send(JSON.stringify({booksByTitle},null,4))
-  } else{
-    return res.status(300).json({message: "Book by the provided title does not exist"});
-  }
+    let myPromise = new Promise((resolve, reject) => {
+        setTimeout(() => {
+            const booksList = Object.values(books);
+            booksByTitle = booksList.filter((book) => {
+                return (book.title === title)
+            });
+
+            if(booksByTitle.length > 0){
+                resolve("Problem resolved");
+            } else{
+                reject("Book by the provided title does not exist")
+                return res.status(300).json({message: "Book by the provided title does not exist"});
+            }
+        },6000);
+    });
+
+    myPromise.then(() => {
+        res.send(booksByTitle);
+    });
 });
 
 //  Get book review
